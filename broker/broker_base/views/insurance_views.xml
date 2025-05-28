@@ -1,0 +1,77 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="broker_base.insurance_list">
+      <field name="name">res.partner.list.insurance</field>
+      <field name="model">res.partner</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="slug"/>
+          <field name="insurance_org"/>
+          <field name="miis_code"/>
+          <field name="phone" widget="phone"/>
+          <field name="email"/>
+          <field name="stamp" widget="image" options='{"preview_image": "image_128", "size": [60, 60]}'/>
+          <field name="image_1920" widget="image" options='{"preview_image": "image_128", "size": [60, 60]}'/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="broker_base.insurance_form" model="ir.ui.view">
+      <field name="name">res.partner.form.insurance</field>
+      <field name="model">res.partner</field>
+      <field name="arch" type="xml">
+          <form string="Insurance Partner Form">
+            <sheet>
+                <div class="oe_title" modifiers="{}">
+                  <label for="name" class="oe_edit_only" modifiers="{}"/>
+                  <h1 modifiers="{}">
+                    <field name="name" widget="field_partner_autocomplete" modifiers="{'required':true}"/>
+                  </h1>
+                </div>
+
+                <group>
+                    <group>
+                        <!-- <field name="registerno" /> -->
+                        <field name="phone" widget="phone" />
+                        <field name="email"/>
+                        <field name="insurance_org"/>
+                        <label for="street" string="Хаяг"/>
+                        <div>
+                            <div class="o_address_format" name="div_address">
+                                <field name="street" placeholder="Хаяг..." class="o_address_street"/>
+                            </div>
+                        </div>
+                    </group>
+                    <group>
+                        <field name="slug" />
+                        <field name="image_1920" widget="image" class="oe_avatar" modifiers="{}"/>
+                        <field name="stamp" widget="image" class="oe_avatar" modifiers="{}"/>
+                    </group>
+                </group>
+                <group string="Банкны данс">
+                    <field name="bank_ids">
+                        <tree editable="bottom">
+                            <field name="bank_id"/>
+                            <field name="acc_number"/>
+                            <field name="acc_holder_name" />
+                        </tree>
+                    </field>
+                </group>
+            </sheet>
+          </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="broker_base.insurance_action_window">
+      <field name="name">Даатгал</field>
+      <field name="res_model">res.partner</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('broker_base.insurance_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('broker_base.insurance_form')})]"/>
+      <field name="domain">[('broker_type', '=', 'insurance')]</field>
+      <field name="context">{'default_broker_type': 'insurance'}</field>
+    </record>
+  </data>
+</odoo>

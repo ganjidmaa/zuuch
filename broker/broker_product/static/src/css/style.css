@@ -1,0 +1,3 @@
+.o_list_view .o_list_table thead > tr > th {
+    max-width: 400px !important;
+  }

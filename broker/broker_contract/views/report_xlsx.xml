@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="contract_report_view" model="ir.ui.view">
+      <field name="name">contract.reports.form</field>
+      <field name="model">contract.reports</field>
+      <field name="arch" type="xml">
+          <form string="Report Form" import='false' export_xlsx="false" create='false' edit='true' class="broker-report-container">     
+          
+            <sheet>
+                <group colspan='2'>
+                    <group>
+                        <field name="start_date" />
+                    </group>
+                    <group>
+                        <field name="end_date" />
+                    </group>   
+                </group>
+                <group>
+                    <field name="end_date" style='visibility: hidden;' string=''/> 
+                </group>
+                <button name="general_report_excel" class="oe_highlight broker-report-btn" type="object"  >
+                    Дэлгэрэнгүй тайлан
+                </button>
+            </sheet>
+
+            <sheet>
+                <group colspan='2'>
+                    <group>
+                        <field name="start_date" />
+                    </group>
+                    <group>
+                        <field name="end_date" />
+                    </group>
+
+                    <group>
+                        <field name='user_id' required='1' colspan='2'
+                            context="{'form_view_ref': 'broker_base.customer_form', 'no_edit': False, 'no_create': False, 'no_create_edit':False, 'no_open': False}"/> 
+                    </group>
+
+                    <button name="reward_report_excel" class="oe_highlight broker-report-btn" type="object" >
+                        Урамшууллын тайлан
+                    </button>
+                </group>
+            </sheet>
+
+            <sheet>
+                <group colspan='2'>
+                    <group>
+                        <field name="start_date" />
+                    </group>
+
+                    <group>
+                        <field name="end_date" />
+                    </group>
+                    <group>
+                        <field name="end_date" style='visibility: hidden;' string=''/> 
+                    </group>
+                    <button name="financial_commision_report_excel" class="oe_highlight broker-report-btn" type="object" >
+                        Санхүүгийн зохицуулах хорооны тайлан
+                    </button>
+                </group>
+            </sheet>
+
+          </form>
+      </field>
+    </record>
+
+    <template id="broker_contract_assets">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet/scss" href="/broker_contract/static/src/scss/contract_detail.scss"/>
+        </xpath>
+    </template>
+
+
+    <record model="ir.actions.act_window" id="general_report_download_action_view">
+        <field name="name">Дэлгэрэнгүй тайлан</field>
+        <field name="res_model">contract.reports</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" eval="contract_report_view"/>
+    </record>
+
+    <menuitem name="Тайлан" id="broker_report_menu_root" sequence="10" 
+        groups='group_broker_report,group_broker_contract_admin' parent='broker_base.menu_board_root1'
+        action="broker_contract.general_report_download_action_view"/>
+
+</odoo>

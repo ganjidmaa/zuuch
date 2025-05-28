@@ -1,0 +1,25 @@
+<odoo>
+    <record id="miis_download_action_wizard_form" model="ir.ui.view">
+        <field name="name">miis.download.action.wizard.form</field>
+        <field name="model">miis.download.action.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Ami Download Action">
+                <group>
+                    <field name="start_date" />
+                </group>
+                <footer>
+                    <button string="Татах" type="object" name="confirm_action" class="btn-primary"/>
+                    <button string="Болих" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_confirm_action_wizard" model="ir.actions.act_window">
+        <field name="name">Албан журам татах</field>
+        <field name="res_model">miis.download.action.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

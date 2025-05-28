@@ -1,0 +1,47 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="broker_product.insurance_type_list">
+      <field name="name">insurance.types.list</field>
+      <field name="model">insurance.types</field>
+      <field name="arch" type="xml">
+        <tree import='false' export_xlsx="false">
+          <field name="name"/>
+          <field name="slug"/>
+          <field name="tapatrip_code"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="broker_product.insurance_type_form">
+      <field name="name">insurance.types.form</field>
+      <field name="model">insurance.types</field>
+      <field name="arch" type="xml">
+        <form import='false' export_xlsx="false">
+          <sheet>
+            <group>
+              <group>
+                <field name="name" required='1'/>
+                <field name="tapatrip_code" required='1'/>
+              </group>
+              <group>
+                <field name="slug" required='1'/>
+              </group>
+
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="broker_product.insurance_type_action_window">
+      <field name="name">Даатгалын төрөл</field>
+      <field name="res_model">insurance.types</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Даатгалын төрөл" id="insurance_types" parent="broker_product_menu_root" 
+        action="broker_product.insurance_type_action_window" sequence="2"/>
+
+  </data>
+</odoo>

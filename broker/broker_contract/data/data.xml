@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mail_template_contract_pdf_new16" model="mail.template">
+            <field name="name">Даатгалын гэрээний хавсралт</field>
+            <field name="model_id" ref="broker_contract.model_contracts"/>
+            <field name="body_html" type="html">
+                <div>
+                    <p> Танд энэ өдрийн мэнд хүргэе!</p>
+
+                    <p>Эрхэм 
+                        <t t-out='object.customer_id.surname'/> 
+                        <t t-out='object.customer_id.name'/> таньд 
+                        "<t t-out='object.insurance_id.name'/>" даатгалын компанийн
+                        "<t t-out='object.product_id.name'/>" бүтээгдэхүүний гэрээний хавсралтийг илгээж байна.
+                    </p>
+                    <br/>
+                    <t t-set="company" t-value="object.user_id.company_id or user.company_id"/>
+
+                    Хүндэтгэсэн,
+                    <p> <t t-out='company.name'/></p> 
+                    <br/>
+                </div>
+            </field>
+        </record>
+
+    </data>
+</odoo>

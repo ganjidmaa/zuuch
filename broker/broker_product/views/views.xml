@@ -1,0 +1,179 @@
+<odoo>
+  <data>
+
+    <record id="product_local_travel_form" model="ir.ui.view">
+        <field name="name">product.local.travel.valuations.form</field>
+        <field name="model">product.local.travel.valuations</field>
+        <field name="arch" type="xml">
+            <form string="Product Local Travel Form" import='false' export_xlsx="false">
+                <sheet>
+                    <group>
+                    <!-- First Group -->
+                        <group colspan='2'>
+                            <field name="valuation" required='1'/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+  
+  <record model="ir.ui.view" id="broker_product.list">
+      <field name="name">products.list</field>
+      <field name="model">products</field>
+      <field name="arch" type="xml">
+        <tree import='false' export_xlsx="false" expand="context.get('expand', False)">
+          <field name="name"/>
+          <field name="insurance_type_id"/>
+          <field name="insurance_id"/>
+          <field name="payment_fee_percent"/>
+          <field name="user_id"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="broker_product.product_form" model="ir.ui.view">
+      <field name="name">products.form</field>
+      <field name="model">products</field>
+      <field name="arch" type="xml">
+        <form string="Product Form" import='false' export_xlsx="false">
+            <sheet>
+                <group>
+                    <!-- First Group -->
+                    <group colspan='2'>
+                        <field name="name" required='1'/>
+                    </group>
+
+                    <!-- Second Group -->
+                    <group>
+                        <field name="insurance_type_id" required='1' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        <field name="insurance_id" string='Даатгал' required='1' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        <field name="valuation_max_limit" required='1' widget='payment' invisible="insurance_type_slug in ['travel', 'local_travel']"/>
+                        <field name="valuation_min_limit" required='1' widget='payment' invisible="insurance_type_slug in ['travel', 'local_travel']"/>
+                        <field name="customer_duty_liable_type" invisible="insurance_type_slug in ['travel', 'local_travel']"/>                        
+                    </group>
+
+                    <!-- Third Group -->
+                    <group>
+                        <field name="broker_fee_percent" required='1' />
+                        <field name="payment_fee_percent" required='1' />
+                        <field name="discount_type" />
+                        <field name="discount_amount" widget='payment' required="discount_type == False"/>
+                        <field name="user_id" invisible='1'/>
+                        <field name="insurance_type_slug" invisible='1'/>
+                        <field name="customer_duty_liable_amount" invisible="insurance_type_slug in ['travel', 'local_travel']"/>
+                    </group>
+
+                    <!-- Notebook with Pages -->
+                    <notebook colspan="2">
+                        <!-- First Page -->
+                        <page string="Хураамжийн хүснэгт" invisible="insurance_type_slug not in ['travel', 'local_travel']">
+                            <group colspan="2" invisible="insurance_type_slug != 'travel'">
+                                <field name="product_travel_fees" readonly='0' widget="one2many">
+                                    <tree style='max_width: fit-content;' editable='bottom'>
+                                        <field name="country_zone_id" required='1' width="0.5"/>
+                                        <field name="valuation_id" required='1' width="0.5" context="{'default_type': 'travel'}"/>
+                                        <field name="duration_id" required='1' width="0.5"/>
+                                        <field name="payment_fee" required='1' width="0.5" />
+                                        <field name="has_family_fee" width="0.3"/>
+                                        <field name="family_fee" width="0.5" 
+                                            required="has_family_fee == True"
+                                            readonly="has_family_fee != True"
+                                        />
+                                    </tree>
+                                </field>
+                            </group>
+
+                            <group colspan="2" invisible="insurance_type_slug != 'local_travel'">
+                                <field name="product_local_travel_fees" readonly='0'>
+                                    <tree style='max_width: fit-content;' editable='bottom'>
+                                        <field name="valuation_id" required='1' width="0.5"/>
+                                        <field name="duration_id" required='1' width="0.5"/>
+                                        <field name="payment_fee" required='1' width="0.5" />
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+
+                        <!-- Third Page -->
+                        <page string="Гэрээний агуулга" colspan='2'>
+                            <group colspan='2'>
+                                <div colspan='2' style="color: red; font-size:10px;">Файлын нэрийг дундаа зайгүй, нэмэлт тэмдэгтгүй байхаар оруулна уу.</div>
+                                <field name="attachment" filename="attachment_name" string='Гэрээний загвар'/>
+                                <field name="attachment_name"/>
+                                <!-- <field name="template_text" string='Гэрээний даатгуулагчийн мэдээлэл' />
+                                <br/>
+                                <br/>
+                                <field name="template_body" string='Гэрээний нөхцөл'/> -->
+                            </group>
+                        </page>
+                        <page string="ERP IDS" colspan='2'>
+                            <div colspan='2' style="color: red; font-size:10px;">Хэрвээ ERP бүтээгдэхүүний ID мэдэхгүй бол хоосон орхино уу.</div>
+                            <group>
+                                <field name="erp_product_id" />
+                                <field name="erp_bundle_id" />
+                            </group>
+                        </page>
+                    </notebook>
+                </group>
+            </sheet>
+
+            <!-- Chatter Section -->
+            <div class="oe_chatter">
+                <field name="message_follower_ids" widget="mail_followers"/>
+                <field name="message_ids" widget="mail_thread"/>
+                <field name="activity_ids" widget="mail_activity"/>
+            </div>
+        </form>
+
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="broker_product.action_window">
+      <field name="name">Даатгалын бүтээгдэхүүн</field>
+      <field name="res_model">products</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{
+        'default_user_id': uid, 
+        'search_default_group_insurance': 1, 
+        'expand': 1
+      }</field>
+    </record>
+
+    <record id="product_search" model="ir.ui.view">
+        <field name="name">product.search</field>
+        <field name="model">products</field>
+        <field name="arch" type="xml">
+            <search string="Search">
+                <field name="name"/>
+                <field name="insurance_type_id"/>
+                <field name="insurance_id"/>
+                <field name="user_id"/>
+                <field name="payment_fee_percent"/>
+
+                <group expand="1" string="Group By">
+                    <filter name="group_insurance_type" string="Даатгалын төрөл" context="{'group_by': 'insurance_type_id'}"/>
+                    <filter name="group_insurance" string="Даатгал" context="{'group_by': 'insurance_id'}"/>
+                    <filter name="group_user_id" string="Ажилтан" context="{'group_by': 'user_id'}"/>
+                </group>      
+
+            </search>
+        </field>
+    </record>
+
+    <menuitem name="Бүтээгдэхүүнүүд" id="broker_product_menu_root" groups='group_broker_product_user'
+        sequence="3" parent='broker_base.menu_board_root1' />
+
+    <menuitem name="Даатгалын бүтээгдэхүүн" id="products" parent="broker_product_menu_root" 
+        action="broker_product.action_window" sequence="1"/>
+    
+    <menuitem name="Харилцагчид" id="broker_base.menu_root" groups='group_broker_product_user'/>
+
+  </data>
+
+    <!-- <template id="assets_backend" name="ubisol letter assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/css" href="/broker_product/static/src/css/style.css"/>
+        </xpath>
+    </template> -->
+</odoo>

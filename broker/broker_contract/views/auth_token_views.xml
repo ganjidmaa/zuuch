@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+ 
+    <record id="ir_cron_miis_auth_token" model="ir.cron">
+        <field name="name">AUTH TOKEN MIIS </field>
+        <field name="model_id" ref="model_miis"/>
+        <field name="state">code</field>
+        <field name="code">model.get_miis_auth_token()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
+    </record>
+    
+    <record id="ir_cron_agula_auth_token" model="ir.cron">
+        <field name="name">AUTH TOKEN AGULA </field>
+        <field name="model_id" ref="model_contracts"/>
+        <field name="state">code</field>
+        <field name="code">model.get_agula_auth_token()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
+    </record>
+    
+</odoo>

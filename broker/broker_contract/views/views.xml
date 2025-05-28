@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="broker_contract.list">
+      <field name="name">broker contracts list export</field>
+      <field name="model">contracts</field>
+      <field name="arch" type="xml">
+        <tree duplicate="0" multi_edit="0" export_xlsx="1" import='0'
+            edit=''
+            decoration-warning="erp_state != 'sent' and state == 'draft'" 
+            decoration-info="erp_state == 'sent' and state == 'draft'" 
+            decoration-success="state == 'paid' or state == 'sent' " 
+            default_order="id desc"
+            expand='1'
+        >
+          <field name="contract_number"/>
+          <field name="customer_type"/>
+          <field name="customer_name" string='Даатгуулагч'/>
+          <field name="start_date"/>
+          <field name="end_date"/>
+          <field name="create_date" string='Гэрээ байгуулсан огноо' widget='date'/>
+          <field name="user_id" string='Гэрээ хийсэн'/>
+          <field name="insurance_id"/>
+          <field name="product_id"/>
+          <field name="valuation"/>
+          <field name="total_payment"/>
+          <field name="insurance_type_id"/>
+          <field name="state"/>
+          <field name="erp_state"/>
+        </tree>
+      </field>
+    </record>
+
+
+    <record id="broker_contract.contract_form" model="ir.ui.view">
+      <field name="name">contracts.form</field>
+      <field name="model">contracts</field>
+      <field name="arch" type="xml">
+          <form string="Contract Form" import='false' export_xlsx="1" create='false'>
+              <field name="can_approve" invisible='1'/>
+              <header>
+                  <button string="ERP системд илгээх" name="handleApi" type="object" class="oe_highlight" 
+                      invisible="erp_state == 'sent' or erp_product_id == False"
+                      groups='broker_contract.group_broker_contract_user' />
+                  <!-- ERP холбогдсон гэрээний төлбөр төлсөн шалгана. -->
+                  <!-- <button string="Төлбөр шалгах" name="checkPayment" type="object" class="oe_highlight" 
+                      invisible="erp_state != 'sent'" groups='broker_contract.group_broker_contract_user'/> -->
+                  <!-- ERP холбогдоогүй гэрээний төлбөр төлсөн болгоно. -->
+                  <button string="Төлбөр төлөгдсөн" name="payment_paid" type="object" class="oe_highlight" 
+                      invisible="state == 'paid' or erp_state == 'sent'" groups='broker_contract.group_broker_contract_user'/>
+                  <!-- Гэрээний файл үүсгэн системээс хэрэглэгчрүү гэрээ имэйлээр илгээнэ. -->
+                  <button string="Гэрээ мэйлдэх" name="send_contract_email" type="object" class="oe_highlight" 
+                      groups='broker_contract.group_broker_contract_admin'/>
+                  <!-- <button string="Гэрээний файл" name="new_file_generate" type="object" class="oe_highlight" invisible='1'
+                      groups='broker_contract.group_broker_contract_user'/> -->
+                  <field name="state" widget="statusbar" statebar_visible="draft,paid,sent"/>
+              </header>        
+            <sheet>
+                <div name="button_box" class="oe_button_box">
+                    <button name="bank_name_btn" class="oe_stat_button custom-btn" icon="fa-building-o" type="object"
+                      disabled="disabled">
+                        <field name="bank_name" string=" " widget="statinfo"/>
+                    </button>
+                    <button name="account_number_btn" class="oe_stat_button custom-btn" icon="fa-credit-card" type="object"
+                      disabled="disabled" style="min-width: 160px;">
+                        <field name="account_number" string=" " widget="statinfo"/>
+                    </button>
+                    <button name="account_holder_name_btn" class="oe_stat_button custom-btn-user" icon="fa-user" type="object"
+                      disabled="disabled" style="min-width: 200px;">
+                        <field name="account_holder_name" string=" " widget="statinfo"/>
+                    </button>
+                </div> 
+
+                <group>
+                  <group string="Үндсэн">
+                    <field name="erp_product_id" invisible='1'/>
+                    <field name="erp_state" invisible='1'/>
+                    <field name="is_email_sent" invisible='1'/>
+                    <field name="insurance_id" required='1' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="product_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    
+                    <field name="country_zone_id" readonly='0' 
+                          invisible="insurance_type_slug != 'travel'"
+                          required="insurance_type_slug == 'travel'"
+                          options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                    <field name="country" string='Аяллын маршрут' readonly='0' 
+                          invisible="insurance_type_slug != 'local_travel' or state == 'draft'" />
+                    <field name="travel_date" readonly='0' invisible="insurance_type_slug not in ['travel', 'local_travel']" required="insurance_type_slug in ['travel', 'local_travel']" />
+                    <field name="duration_id" readonly='0' invisible="insurance_type_slug != 'travel'" required="insurance_type_slug == 'travel'"
+                          options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" />
+                    <field name="local_duration_id" readonly='0' invisible="insurance_type_slug != 'local_travel'" required="insurance_type_slug == 'local_travel'"
+                          options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" />
+                    <field name="start_date" required='1' invisible="insurance_type_slug in ['travel', 'local_travel']" readonly="insurance_type_slug in ['travel', 'local_travel']"/>
+                    <field name="end_date" required='1' force_save='1' readonly="insurance_type_slug in ['travel', 'local_travel']"/>
+                  </group>
+
+                  <group string="Нэмэлт">
+                      <field name="insurance_slug" invisible='1'/>
+                      <field name="insurance_type_id" readonly='1'/>
+                      <field name="contract_number" required='1' readonly='state != "draft"' force_save='1'/>
+                      <field name="insurance_type_slug" invisible='1'/>
+                      <field name="contract_pdf_id" widget="attachment" string='Хавсралт' options="{'no_create': True}"/>
+                      <field name="valuation_range" style="color: red;" invisible="product_id == False or insurance_type_slug == 'travel'"/>
+                  </group>
+
+                  <group string="Үнэлгээ, хураамж">
+                    <field name="valuation" required='1' widget='payment' invisible="insurance_type_slug in ['travel', 'local_travel']"/>
+                    <field name="local_travel_fees" invisible="insurance_type_slug != 'local_travel'" required="insurance_type_slug == 'local_travel'"
+                          options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"
+                          domain="[('product_id', '=', product_id), ('duration_id', '=', local_duration_id)]"/>
+                    <field name="travel_fees" invisible="insurance_type_slug != 'travel'" required="insurance_type_slug == 'travel'" 
+                        options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"
+                        domain="[('product_id', '=', product_id), ('country_zone_id', '=', country_zone_id), ('duration_id', '=', duration_id)]"/>
+                    <field name="is_family" readonly='0' invisible="insurance_type_slug != 'travel' or insurance_slug != 'practical'"/>
+                    <field name="travel_fee_percent" invisible="insurance_type_slug != 'travel'" />
+                    <field name="payment_fee_percent" readonly='0' invisible="insurance_type_slug in ['travel', 'local_travel']"/>
+                    <field name="payment" widget='payment' string='Хураамж'/>
+                    <field name="customer_duty_liable_type" invisible="insurance_type_slug != 'car'"/>
+                    <field name="customer_duty_liable_amount" invisible="insurance_type_slug != 'car'"/>
+                  </group>
+
+                  <group string="Нэмэлт хураамж">
+                      <field name="exchange_rate" readonly='1' force_save='1' invisible="insurance_type_slug != 'travel'"/>
+                      <field name="travel_people_count" readonly='1' string='Аялагчийн тоо' invisible="insurance_type_slug not in ['travel', 'local_travel']"/>
+                      <field name="has_covid_protect" invisible="insurance_type_slug != 'travel' or insurance_slug != 'mongol'"/>
+                      <field name="additional_risk_payment" invisible="insurance_type_slug in ['travel', 'local_travel', 'health']"/>
+                      <field name="discount_amount" />
+                      <!-- <field name="qr_code"  /> -->
+                      <field name="qr_image" widget='image' class="oe_avatar" readonly='1' invisible="erp_state != 'sent' or state != 'draft'"
+                        options='{"zoom": true, "preview_image":"qr_image"}' />
+                      
+                      <field name="total_payment" widget='payment'/>
+                  </group>
+
+                  <group colspan='2' string="Даатгуулагч">
+                    <group colspan='2'>
+                      <field name='customer_id' required='1' invisible="insurance_type_slug == 'travel' and state == 'draft'" rec_name=""
+                          context="{'form_view_ref': 'broker_base.customer_form', 'no_edit': False, 'no_create': False, 'no_create_edit':False, 'no_open': False}"/> 
+                    </group>
+                    <group invisible="insurance_type_slug in ['travel', 'local_travel'] and state != 'paid'">          
+                      <field name='customer_type' required="insurance_type_slug not in ['travel', 'local_travel']" readonly='0' force_save="1" />   
+                      <field name='customer_surname' string='Овог *' invisible="customer_type == 'company'" readonly='0' force_save="1" /> 
+                      <field name='customer_name' string='Нэр *' required="insurance_type_slug not in ['travel', 'local_travel']" readonly='0' force_save="1" /> 
+                      <field name='customer_registerno' string='Регистр *' required="insurance_type_slug not in ['travel', 'local_travel']" readonly='0' force_save="1" /> 
+                      <field name='customer_age' string='Нас' readonly='0' /> 
+                      <field name='user_id' invisible='1'/> 
+                    </group>
+
+                    <group invisible="insurance_type_slug in ['travel', 'local_travel'] and state != 'paid'">
+                      <field name='customer_email' string='Имэйл *' readonly="0"/> 
+                      <field name='customer_passport' invisible="insurance_type_slug != 'travel'"/> 
+                      <field name='customer_phone' string='Утас *' required="insurance_type_slug not in ['travel', 'local_travel']" readonly='0' force_save="1" /> 
+                      <field name='customer_street' readonly='0' force_save="1" /> 
+                    </group>
+
+                  </group>
+                  <br/>
+                  <br/>
+
+                  <!-- CAR && AJD DETAILS START -->
+                  <group colspan='2' invisible="insurance_type_slug not in ['car', 'ajd']">
+                    <field name='is_limit' string='Хамтран барих эсэх'/> 
+
+                    <field name="driver_ids" widget="one2many" invisible="is_limit == False" string='Нэмэлт жолооч'
+                      context="{'default_broker_type': 'customer', 'form_view_ref': 'broker_base.customer_form', 'tree_view_ref': 'broker_base.customer_list'}">
+                        <tree editable='bottom' style='max-width: fit-content;'>
+                            <field name="surname" string='Овог *' readonly='0' />
+                            <field name="name" string='Нэр *' readonly='0' />
+                            <field name="registerno" string='Регистр *' readonly='0' />
+                            <field name="phone" string='Утас *' readonly='0' />
+                            <field name="email" string='Имэйл *' readonly='0' />
+                            <field name="company_type" readonly='1'/>
+                            <field name="broker_type" readonly='1' force_save='1' invisible='1'/>
+                        </tree>
+                    </field>
+                  </group>
+
+                  <group string="Даатгалын зүйл" colspan='2' invisible="insurance_type_slug not in ['car', 'ajd']">
+                    <group>
+                      <field name="state_number" string='Улсын дугаар *' readonly="can_approve == False" required="insurance_type_slug in ['car', 'ajd']"/>
+                    </group>
+                    <group>
+                      <div style="background-color: #004A98; color: #FFFFFF; min-height: 26px; margin: -1px 3px 4px 0; padding-top: 3px; padding-bottom: 2px; border-radius: 3px; text-align: center; vertical-align: middle; width: 100px;">
+                        Хайх
+                      </div>
+                    </group>
+
+                    <group>
+                      <field name="cabin_number" readonly='1' force_save="1" required="insurance_type_slug in ['car', 'ajd']"/>
+                      <field name="country_name" readonly='1' force_save="1" required="insurance_type_slug in ['car', 'ajd']"/>
+                      <field name="car_mark_name" readonly='1' force_save="1" required="insurance_type_slug in ['car', 'ajd']"/>
+                      <field name="car_model_name" readonly='1' force_save="1" required="insurance_type_slug in ['car', 'ajd']"/>
+                      <field name="type" readonly='1' force_save="1" required="insurance_type_slug in ['car', 'ajd']"/>
+                      <field name="build_year" readonly='1' force_save="1" required="insurance_type_slug in ['car', 'ajd']"/>
+                      <field name="imported_year" readonly='1' force_save="1" required="insurance_type_slug in ['car', 'ajd']"/>
+                      <field name="color" readonly='1' force_save="1" required="insurance_type_slug in ['car', 'ajd']"/>
+                    </group>
+
+                    <group>
+                      <field name="motor_capacity" readonly='1' force_save="1" required="insurance_type_slug in ['car', 'ajd']"/>
+                      <field name="payload_capacity" readonly='1' force_save="1" required="insurance_type_slug in ['car', 'ajd']"/>
+                      <field name="seating_capacity" readonly='1' force_save="1" required="insurance_type_slug in ['car', 'ajd']"/>
+                      <field name="class_name" readonly='1' force_save="1" required="insurance_type_slug in ['car', 'ajd']"/>
+                      <field name="is_trailer" readonly='1' force_save="1" required="insurance_type_slug in ['car', 'ajd']"/>
+                    </group>
+                  </group>
+
+                  <!-- TRAVEL DETAILS START -->
+                  <!-- #reference new tree or view form  -->
+                  <group colspan='2' invisible="insurance_type_slug != 'travel' or state == 'paid'">
+                    <field name="travel_people" widget="one2many" domain="[('broker_type', '=', 'customer')]" no_label="1"
+                          context="{'form_view_ref': 'broker_base.customer_form', 'tree_view_ref': 'broker_base.customer_list'}">
+                        <tree editable='bottom' style='max-width: fit-content;'>
+                            <field name="surname" required='0' readonly='0' />
+                            <field name="name" readonly='0' required='1' />
+                            <field name="registerno" readonly='0' required='1' />
+                            <field name="passport_no" readonly='0' required='0' string="Пасспорт №"/>
+                            <field name="phone" readonly='0' required='1' />
+                            <field name="email" readonly='0' widget="email" string="Имэйл"/>
+                            <field name="broker_type" readonly='1' force_save='1' column_invisible="True"/>
+                        </tree>
+                    </field>
+                  </group>
+
+                  <group colspan='2' invisible="insurance_type_slug != 'local_travel' or state == 'paid'">
+                    <field name="travel_people" widget="one2many" domain="[('broker_type', '=', 'customer')]" no_label="1" 
+                      context="{'form_view_ref': 'broker_base.customer_form', 'tree_view_ref': 'broker_base.customer_list'}">
+                        <tree editable='bottom' style='max-width: fit-content;'>
+                            <field name="surname" string='Овог' required='0' readonly='0' />
+                            <field name="name" string='Нэр' readonly='0' required='1' />
+                            <field name="registerno" string='Регистр' readonly='0' required='1' />
+                            <field name="phone" string='Утас' readonly='0' required='1' />
+                            <field name="email" string='Имэйл' readonly='0' widget="email"/>
+                            <field name="broker_type" string='Хаяг' readonly='1' force_save='1' column_invisible="True"/>
+                        </tree>
+                    </field>
+                  </group>
+
+                </group>
+            </sheet>
+            <div class="oe_chatter">
+                <field name="message_follower_ids" widget="mail_followers"/>
+                <field name="message_ids" widget="mail_thread"/>
+                <field name="activity_ids" widget="mail_activity"/>
+            </div>
+          </form>
+      </field>
+    </record>
+
+    <record id="contract_search" model="ir.ui.view">
+        <field name="name">contract.search</field>
+        <field name="model">contracts</field>
+        <field name="arch" type="xml">
+            <search string="Search">
+                <field name="contract_number"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="insurance_name"/>
+
+                <field name="product_id"/>
+                <field name="state_number"/>
+                <field name="customer_name"/>
+                <field name="customer_phone"/>
+                <field name="user_id"/>
+
+                <filter name="last_month_start_date" string="Өнгөрсөн сар - үүсгэсэн огноо" 
+                    domain="[('create_date', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01')),
+                    ('create_date', '&lt;', context_today().strftime('%Y-%m-01'))]"/>          
+                <filter name="this_month_start_date" string="Энэ сар - үүсгэсэн огноо" 
+                    domain="[('create_date', '>=', context_today().strftime('%Y-%m-01')),
+                    ('create_date', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+                <filter name="yesterday_start_date" string="Өчигдөр" 
+                    domain="[('create_date', '>=', (context_today() - relativedelta(days=1)).strftime('%Y-%m-%d 00:00:00')),
+                            ('create_date', '&lt;', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                <filter name="today_start_date" string="Өнөөдөр" 
+                    domain="[('create_date', '>=', context_today().strftime('%Y-%m-%d 00:00:00')),
+                            ('create_date', '&lt;', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                <filter name="this_year_start_date" string="Энэ жил - үүсгэсэн огноо" 
+                    domain="[('create_date', '>=', context_today().strftime('%Y-01-01')),
+                    ('create_date', '&lt;', context_today().strftime('%Y-12-31'))]"/> 
+                <filter name="prev_year_start_date" string="Өнгөрсөн жил - үүсгэсэн огноо" 
+                    domain="[('create_date', '>=', (context_today()-relativedelta(years=1)).strftime('%Y-01-01')),
+                    ('create_date', '&lt;', context_today().strftime('%Y-01-01'))]"/>   
+                <separator/>
+                <filter string="Төлбөр төлсөн" name="state_paid_filter" domain="[('state', '!=', 'draft')]"/>
+                <filter string="Хязгаарлаaгүй" name="is_limit_filter" domain="[('is_limit', '=', False)]"/>
+                <filter name="archived" string="Архивласан гэрээ" domain="[('active', '=', False)]"/>
+
+                <group expand="1" string="Group By">
+                    <filter name="group_state" string="Төлөв" context="{'group_by': 'state'}"/>
+                    <filter name="group_insurance_type" string="Даатгалын төрөл" context="{'group_by': 'insurance_type_id'}"/>
+                    <filter name="group_insurance" string="Даатгал" context="{'group_by': 'insurance_id'}"/>
+                    <filter name="group_product" string="Бүт-ний төрөл" context="{'group_by': 'product_id'}"/>
+                    <filter name="group_user_id" string="Ажилтан" context="{'group_by': 'user_id'}"/>
+                </group>      
+
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="broker_contract.action_window">
+      <field name="name">Даатгалууд</field>
+      <field name="res_model">contracts</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{'context_active_id': 2, 'search_default_today_start_date': 1, 'search_default_group_user_id': 1}</field>
+    </record>
+
+
+    <menuitem name="Гэрээнүүд" id="broker_contract_menu_root" sequence="2" 
+        groups='group_broker_company' parent='broker_base.menu_board_root1'/>
+
+    <menuitem name="Бүх даатгал" id="contracts" parent="broker_contract_menu_root"
+        sequence='1' action="broker_contract.action_window"/>
+
+</odoo>

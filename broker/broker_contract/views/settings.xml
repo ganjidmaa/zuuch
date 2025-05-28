@@ -1,0 +1,13 @@
+<odoo>
+
+    <record id="settings_form" model="ir.ui.view">
+      <field name="name">settings list</field>
+      <field name="model">settings</field>
+      <field name="arch" type="xml">
+        <tree import='false' export_xlsx="false" editable='bottom'>
+          <field name="last_contract_number" string='Хамгийн сүүлийн дэс дугаар'/>
+        </tree>
+      </field>
+    </record>
+
+</odoo>

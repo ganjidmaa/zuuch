@@ -1,0 +1,36 @@
+<odoo>
+  <data>
+
+    <record id="car_form" model="ir.ui.view">
+      <field name="name">cars.form</field>
+      <field name="model">cars</field>
+      <field name="arch" type="xml">
+          <form string="Car Form" import='false' export_xlsx="false">
+            <sheet>
+                <group>
+                  <group>
+                    <field name="state_number" readonly='0'/>
+                      <field name="cabin_number" readonly='0'/>
+                      <field name="country_name" readonly='0'/>
+                      <field name="car_mark_name" readonly='0'/>
+                      <field name="car_model_name" readonly='0'/>
+                      <field name="type" readonly='0'/>
+                      <field name="build_year" readonly='0'/>
+                      <field name="imported_year" readonly='0'/>
+                      <field name="color" readonly='0'/>
+                  </group>
+
+                  <group>
+                      <field name="motor_capacity" readonly='0'/>
+                      <field name="payload_capacity" readonly='0'/>
+                      <field name="seating_capacity" readonly='0'/>
+                      <field name="class_name" readonly='0'/>
+                  </group>
+                </group>
+            </sheet>
+          </form>
+        </field>
+    </record>
+
+  </data>
+</odoo>

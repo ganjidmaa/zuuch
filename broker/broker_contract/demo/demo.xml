@@ -1,0 +1,9 @@
+<odoo>
+    <data>
+
+        <record id="work_location_1" model="settings">
+          <field name="last_contract_number">0</field>
+      </record>
+
+    </data>
+</odoo>

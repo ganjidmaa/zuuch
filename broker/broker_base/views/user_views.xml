@@ -1,0 +1,21 @@
+<odoo>
+  <data>
+      
+      <record id="view_users_form_inherit_in_broker" model="ir.ui.view">
+          <field name="name">res.users.form.inherit.broker</field>
+          <field name="model">res.users</field>
+          <field name="type">form</field>
+          <field name="inherit_id" ref="base.view_users_form"/>
+          <field name="arch" type="xml">
+              <xpath expr="//field[@name='tz']" position="after">
+                  <field name="miis_user_number"/>
+                  <field name="contract_prefix"/>
+                  <field name="insurance_id"/>
+                  <field name="branch" string='Салбар'/>
+              </xpath>
+
+          </field>
+      </record>
+      
+  </data>
+</odoo>

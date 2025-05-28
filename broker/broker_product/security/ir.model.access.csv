@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_broker_product,broker_product.products,model_products,group_broker_product_user,1,1,1,1
+access_broker_risk,broker_product.risks,model_risks,group_broker_product_user,1,1,1,1
+access_broker_insurance_type,broker_product.insurance_types,model_insurance_types,group_broker_product_user,1,1,1,1
+access_broker_service,broker_product.services,model_services,group_broker_product_user,1,1,1,1
+access_broker_product_risk,broker_product.product_risks,model_product_risks,group_broker_product_user,1,1,1,1
+access_broker_product_travel_fees,broker_product.product_travel_fees,model_product_travel_fees,group_broker_product_user,1,1,1,1
+access_broker_product_local_travel_fees,broker_product.product_local_travel_fees,model_product_local_travel_fees,group_broker_product_user,1,1,1,1
+access_broker_country_zones,broker.country.zones,broker_base.model_country_zones,group_broker_product_user,1,1,1,1
+access_broker_durations,broker.durations,broker_base.model_durations,group_broker_product_user,1,1,1,1
+access_broker_local_travel_fees,broker.local.travel,model_product_local_travel_fees,group_broker_product_user,1,1,1,1
+access_broker_valuations,broker.valuations,model_product_local_travel_valuations,group_broker_product_user,1,1,1,1
+access_broker_local_durations,broker.local.durations,broker_base.model_local_durations,group_broker_product_user,1,1,1,1
+access_broker_product_risks,broker_product.product_risks,broker_product.model_product_risks,group_broker_product_user,1,1,1,1

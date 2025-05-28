@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="contract_detail_pdf_new4">
+        <t t-call="web.html_container">
+            <t t-set="company" t-value="env.company"/>
+            
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="broker_contract.contract_print_header" t-lang="mn_MN">
+                    <div class="col-12 page" style="font-family: Arial, Helvetica, sans-serif;">
+                        <!-- <br/> -->
+                        <div name="education_info" style="line-height: 1.4;">
+                            <div class="col-12" >
+                                <div class="row title">
+                                    <style>
+                                        .title p,span,font {font-size: 14px !important; font-family: Arial, Helvetica, sans-serif !important;}
+                                        .bold { font-weight: bold !important; }
+                                    </style>
+                                    <div class="col-12" style='border-bottom: 1px solid black'>
+                                        <img t-if="doc['insurance_logo']" t-att-src="image_data_uri(doc['insurance_logo'])" 
+                                            style="height:auto; width:70px !important; text-align: center; margin-bottom: 1px; "/>
+                                    </div>
+                                    <!-- <div class="col-8" id="contract_template_text">
+                                        <p style="text-align: center; margin-bottom: 4px;" class='bold'>                                        
+                                            <t t-out="doc['header']" />ЫН ГЭРЭЭ
+                                        </p>
+
+                                        <p style="text-align: center; margin-bottom: 0px; " class='bold'>
+                                            Баталгааны дугаар: <t t-out="doc['contract_number']" />
+                                        </p>
+                                    </div>
+                                    <div class="col-2"></div> -->
+                                </div>
+            
+                                <div class="p-remove letter_report_html" id='letter_template_text' style="text-align:justify;">
+                                    <style> 
+                                        .p-remove p,span,font {font-size: 10px !important; line-height:12px!important; font-family: Arial !important;}
+                                        .p-remove table {width: 100% !important; text-align:left;}
+                                        .p-remove td {padding: 2px 4px !important; }
+                                        .p-remove td > p, td > span {font-size: 8px!important; line-height:9px!important;}
+                                        .td-w-quarter {width: 25% !important;}
+                                        .p-remove td > p > strong, td > strong {font-family: Arial!important; font-weight: bold;}
+                                        .bold {font-weight: bold;}
+                                        
+                                    </style>
+                      
+                                    <t t-raw="doc['template_text']" />
+                                    
+                                    <t t-out="doc['template_body']"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+
+        </t>
+    </template>
+
+
+</odoo>

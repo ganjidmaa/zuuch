@@ -1,0 +1,44 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="broker_product.service_list">
+      <field name="name">services.list</field>
+      <field name="model">services</field>
+      <field name="arch" type="xml">
+        <tree import='false' export_xlsx="false">
+          <field name="name"/>
+          <field name="desc"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="broker_product.service_form" model="ir.ui.view">
+      <field name="name">services.form</field>
+      <field name="model">services</field>
+      <field name="arch" type="xml">
+          <form string="Service Form" import='false' export_xlsx="false">
+            <sheet>
+                <group>
+                  <group colspan='2'>
+                    <field name="name" required='1'/>
+                  </group>
+                  <group colspan='2'>
+                    <field name="desc"/>
+                  </group>
+                </group>
+            </sheet>
+          </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="broker_product.service_action_window">
+      <field name="name">Нэмэлт үйлчилгээ, хамгаалалт</field>
+      <field name="res_model">services</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Нэмэлт үйлчилгээ" id="services" parent="broker_product_menu_root" 
+        action="broker_product.service_action_window" sequence="4"/>
+
+  </data>
+</odoo>

@@ -1,0 +1,16 @@
+
+.broker-report-btn.broker-report-btn{
+    width: 80% !important; 
+    margin: 0 10% !important;
+}
+
+.broker-report-container .o_form_view_container .o_content .o_form_renderer{
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+}
+
+@media screen and (max-width: 800px) {
+    .broker-report-container .o_form_view_container .o_content .o_form_renderer{
+        grid-template-columns: repeat(1, minmax(0,1fr));
+    }
+}

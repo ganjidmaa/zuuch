@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+  <data>
+
+        <menuitem id="hr.hr_menu_hr_reports" groups="broker_base.hide" />
+        <menuitem id="hr.menu_hr_reporting_timesheet" groups="broker_base.hide" />
+        <menuitem id="hr.menu_human_resources_configuration" groups="broker_base.hide" />
+        <menuitem id="hr.menu_hr_employee_payroll" groups="broker_base.hide" />
+        <menuitem id="hr.menu_hr_employee_user" groups="broker_base.hide" />
+        <menuitem id="mail.menu_root_discuss" groups="broker_base.hide" />
+        
+        <menuitem name="Үндсэн хуудас" 
+            id="menu_board_root1" groups="base.group_user" sequence="1"/>
+
+        <menuitem name="Хүний нөөц" id="hr.menu_hr_root"
+            parent="menu_board_root1" groups="hr.group_hr_manager,hr.group_hr_user" sequence="6"/>
+
+        <menuitem id="menu_hr_employee_user_broker" name="Хүний нөөц" sequence="1"
+            action="hr.open_view_employee_list_my" parent="hr.menu_hr_root" groups="hr.group_hr_manager"/> 
+
+        <menuitem id="hr.menu_hr_employee" name="Ажилчдын лавлах" sequence="2" parent="hr.menu_hr_root" groups="hr.group_hr_user"/> 
+
+        <!-- <menuitem id="hr.menu_view_hr_job" name="Албан тушаал" sequence="3"
+            action="hr.action_hr_job" parent="hr.menu_hr_root" groups="hr.group_hr_manager"/>  
+
+        <menuitem id="hr.menu_hr_department_tree" name="Алба хэлтэс" sequence="4"
+            action="hr.open_module_tree_department" parent="hr.menu_hr_root" groups="hr.group_hr_manager"/>   -->
+
+        <menuitem name="Харилцагчид" id="customers_menu_root"
+            sequence="5" parent='menu_board_root1' groups="hr.group_hr_manager"/>
+
+        <menuitem name="Даатгалын компани" id="insurances" sequence="1" 
+            parent="customers_menu_root" action="broker_base.insurance_action_window"/>
+
+        <menuitem name="Харилцагч" id="customers" sequence="2"
+            parent="customers_menu_root" action="broker_base.customer_action_window"/>
+  </data>
+</odoo>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hide" model="res.groups">
+            <field name="name">Hide</field>
+            <field name="comment">Hide.</field>
+        </record>
+
+        <record model="ir.ui.menu" id="hr.hr_menu_hr_reports">
+            <field name="groups_id" eval="[(5,ref('hide'))]"/>
+        </record>
+
+        <record model="ir.ui.menu" id="hr.menu_hr_reporting_timesheet">
+            <field name="groups_id" eval="[(5,ref('hide'))]"/>
+        </record>
+
+        <record model="ir.ui.menu" id="hr.menu_human_resources_configuration">
+            <field name="groups_id" eval="[(5,ref('hide'))]"/>
+        </record>
+
+        <record model="ir.ui.menu" id="hr.menu_hr_employee_payroll">
+            <field name="groups_id" eval="[(5,ref('hide'))]"/>
+        </record>
+
+        <record model="ir.ui.menu" id="hr.menu_hr_employee_user">
+            <field name="groups_id" eval="[(5,ref('hide'))]"/>
+        </record>
+
+        <record model="ir.ui.menu" id="mail.menu_root_discuss">
+            <field name="groups_id" eval="[(5,ref('hide'))]"/>
+        </record>
+
+    </data>
+</odoo>
